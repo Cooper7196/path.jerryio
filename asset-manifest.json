@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/path.jerryio/static/css/main.60545e8a.css",
+    "main.js": "/path.jerryio/static/js/main.846f7df4.js",
+    "static/media/VRC-OverUnder-Default-TileColor66_71-2000x2000.png": "/path.jerryio/static/media/VRC-OverUnder-Default-TileColor66_71-2000x2000.f608313da63432a284cd.png",
+    "static/media/VRC-FieldPerimeter-TileColor66_71-2000x2000.png": "/path.jerryio/static/media/VRC-FieldPerimeter-TileColor66_71-2000x2000.9ca2d7443705e3daa1fa.png",
+    "service-worker.js": "/path.jerryio/service-worker.js",
+    "precache/favicon.ico": "/path.jerryio/precache/favicon.ico",
+    "index.html": "/path.jerryio/index.html",
+    "main.60545e8a.css.map": "/path.jerryio/static/css/main.60545e8a.css.map",
+    "main.846f7df4.js.map": "/path.jerryio/static/js/main.846f7df4.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.60545e8a.css",
+    "static/js/main.846f7df4.js"
+  ]
+}
