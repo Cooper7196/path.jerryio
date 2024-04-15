@@ -426,28 +426,78 @@ export function getBezierCurveArcLength(segment: Segment, interval: number = 0.0
  * @param prevIntegral The previous integral added to the total distance
  * @returns The sample points of the segment
  */
+
+export function multiply(a, b) {
+  var aNumRows = a.length, aNumCols = a[0].length,
+    bNumRows = b.length, bNumCols = b[0].length,
+    m = new Array(aNumRows);  // initialize array of rows
+  for (var r = 0; r < aNumRows; ++r) {
+    m[r] = new Array(bNumCols); // initialize the current row
+    for (var c = 0; c < bNumCols; ++c) {
+      m[r][c] = 0;             // initialize the current cell
+      for (var i = 0; i < aNumCols; ++i) {
+        m[r][c] += a[r][i] * b[i][c];
+      }
+    }
+  }
+  return m;
+}
+
+
 export function getBezierCurvePoints(segment: Segment, interval: number, prevIntegral = 0): SamplePoint[] {
   let points: SamplePoint[] = [];
-
+  console.log(segment, interval)
   // Bezier curve implementation
   let totalDistance = prevIntegral;
   let lastPoint: Vector = segment.controls[0];
-
-  const n = segment.controls.length - 1;
-  for (let t = 0; t <= 1; t += interval) {
-    let point = new Vector(0, 0);
-    for (let i = 0; i <= n; i++) {
-      const ber = bernstein(n, i, t);
-      const controlPoint = segment.controls[i];
+  if (segment.controls.length === 4) {
+    const inverseMatrix = [
+      [1, 0, 0, 0, 0, 0],
+      [0, 1, 0, 0, 0, 0],
+      [0, 0, 1, 0, 0, 0],
+      [-10, -6, -3, 10, -4, 0],
+      [15, 8, 3, -15, 7, -1],
+      [-6, -3, -1, 6, -3, 0]
+    ];
+    let controlsMatrix = [
+      [segment.controls[0].x, segment.controls[0].y],
+      [segment.controls[1].x - segment.controls[0].x, segment.controls[1].y - segment.controls[0].y],
+      [0, 0],
+      [segment.controls[3].x, segment.controls[3].y],
+      [segment.controls[2].x - segment.controls[3].x, segment.controls[2].y - segment.controls[3].y],
+      [0, 0]
+    ];
+    // console.log(controlsMatrix)
+    let coeff = multiply(inverseMatrix, controlsMatrix)
+    for (let t = 0; t <= 1; t += interval) {
+      let point = new Vector(0, 0);
       // PERFORMANCE: Do not use add() here
-      point.x += controlPoint.x * ber;
-      point.y += controlPoint.y * ber;
+      let timeMatrix = [1, t, t * t, t * t * t, t * t * t * t, t * t * t * t * t]
+      let newPoint = multiply(coeff, timeMatrix)
+      point.x += coeff[0][0] + coeff[1][0] * t + coeff[2][0] * t * t + coeff[3][0] * t * t * t + coeff[4][0] * t * t * t * t + coeff[5][0] * t * t * t * t * t
+      point.y += coeff[0][1] + coeff[1][1] * t + coeff[2][1] * t * t + coeff[3][1] * t * t * t + coeff[4][1] * t * t * t * t + coeff[5][1] * t * t * t * t * t
+      let delta = point.distance(lastPoint);
+      points.push(new SamplePoint(point.x, point.y, delta, (totalDistance += delta), segment, t));
+      lastPoint = point;
     }
-    let delta = point.distance(lastPoint);
-    points.push(new SamplePoint(point.x, point.y, delta, (totalDistance += delta), segment, t));
-    lastPoint = point;
-  }
 
+  }
+  else {
+    const n = segment.controls.length - 1;
+    for (let t = 0; t <= 1; t += interval) {
+      let point = new Vector(0, 0);
+      for (let i = 0; i <= n; i++) {
+        const ber = bernstein(n, i, t);
+        const controlPoint = segment.controls[i];
+        // PERFORMANCE: Do not use add() here
+        point.x += controlPoint.x * ber;
+        point.y += controlPoint.y * ber;
+      }
+      let delta = point.distance(lastPoint);
+      points.push(new SamplePoint(point.x, point.y, delta, (totalDistance += delta), segment, t));
+      lastPoint = point;
+    }
+  }
   return points;
 }
 
