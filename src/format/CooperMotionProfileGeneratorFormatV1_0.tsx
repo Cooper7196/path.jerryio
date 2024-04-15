@@ -269,11 +269,11 @@ export class CooperMotionProfileGeneratorFormatV1_0 implements Format {
 
     const uc = new UnitConverter(this.gc.uol, UnitOfLength.Inch);
     const segments = path.segments;
-    rtn = `${gc.chassisName}.followPath(new Path(`;
+    rtn = `${gc.chassisName}.followPath(new mpLib::Spline({`;
     if (segments.length > 0) {
       for (const segment of segments) {
         console.log(segment.controls);
-        rtn += "new Bezier(";
+        rtn += "new mpLib::CubicBezier(";
         for (const control of segment.controls) {
           rtn += `{${uc.fromAtoB(control.x).toUser()}, ${uc.fromAtoB(control.y).toUser()}}, `;
         }
@@ -281,7 +281,7 @@ export class CooperMotionProfileGeneratorFormatV1_0 implements Format {
         rtn += "), ";
       }
       rtn = rtn.slice(0, -2);
-      rtn += "));";
+      rtn += "}));";
     }
 
     return rtn;
