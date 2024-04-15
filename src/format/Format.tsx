@@ -7,6 +7,7 @@ import { UnitOfLength } from "@core/Unit";
 import { LemLibFormatV0_4 } from "./LemLibFormatV0_4";
 import { PathDotJerryioFormatV0_1 } from "./PathDotJerryioFormatV0_1";
 import { LemLibOdomGeneratorFormatV0_4 } from "./LemLibOdomGeneratorFormatV0_4";
+import { CooperMotionProfileGeneratorFormatV1_0 } from "./CooperMotionProfileGeneratorFormatV1_0";
 import { LemLibFormatV1_0 } from "./LemLibFormatV1_0";
 import { isExperimentalFeaturesEnabled } from "@core/Preferences";
 import { RigidCodeGenFormatV0_1 } from "./RigidCodeGenFormatV0_1";
@@ -80,7 +81,8 @@ export function getAllFormats(): Format[] {
   return [
     ...[
       new LemLibFormatV0_4(), //
-      new LemLibOdomGeneratorFormatV0_4()
+      new LemLibOdomGeneratorFormatV0_4(),
+      new CooperMotionProfileGeneratorFormatV1_0()
     ],
     ...(isExperimentalFeaturesEnabled()
       ? [new LemLibFormatV1_0(), new RigidCodeGenFormatV0_1(), new MoveToPointCodeGenFormatV0_1()]
